@@ -75,6 +75,12 @@ html, body {
 .hbtn.support span:first-child { color: #D9534F; }
 .hbtn.support:hover { background: #FCE8CE; }
 .fb-msg { font-size: 13px; color: #C0392B; text-align: center; margin-top: 10px; display: none; }
+.custom-amt { display: flex; align-items: center; gap: 8px; border: 1.5px solid rgba(217,154,78,0.3);
+  border-radius: 12px; padding: 10px 16px; margin-bottom: 6px; background: #FFF4E6; }
+.custom-amt span { font-family: Georgia, serif; font-size: 18px; color: var(--gold-deep); }
+.custom-amt input { flex: 1; border: none; background: transparent; outline: none; font-size: 16px;
+  color: var(--text); font-family: inherit; }
+.custom-amt:focus-within { border-color: var(--gold); background: #FCE8CE; }
 
 /* ── Chat ── */
 #chat {
@@ -359,11 +365,15 @@ html, body {
 
     <p data-i18n="fbDonateLine" style="margin:18px 0 12px"></p>
     <div class="amounts">
-      <div class="amt" onclick="pickAmt(2,this)"><div class="amt-price">$2</div><div class="amt-label" data-i18n="amt2"></div></div>
-      <div class="amt" onclick="pickAmt(6,this)"><div class="amt-price">$6</div><div class="amt-label" data-i18n="amt6"></div></div>
-      <div class="amt" onclick="pickAmt(10,this)"><div class="amt-price">$10</div><div class="amt-label" data-i18n="amt10"></div></div>
+      <div class="amt" id="amt2" onclick="pickAmt(2,this)"><div class="amt-price">$2</div><div class="amt-label" data-i18n="amt2"></div></div>
+      <div class="amt" id="amt6" onclick="pickAmt(6,this)"><div class="amt-price">$6</div><div class="amt-label" data-i18n="amt6"></div></div>
+      <div class="amt" id="amt10" onclick="pickAmt(10,this)"><div class="amt-price">$10</div><div class="amt-label" data-i18n="amt10"></div></div>
     </div>
-    <button class="mbtn solid" id="donatePay" onclick="donate()" disabled data-i18n="donateChoose"></button>
+    <div class="custom-amt">
+      <span>$</span>
+      <input type="number" id="customAmt" min="1" max="999" step="1" oninput="pickCustom()" data-i18n-ph="amtOther">
+    </div>
+    <button class="mbtn solid" id="donatePay" onclick="donate()" data-i18n="donateChoose"></button>
     <div class="fb-msg" id="fbMsg" data-i18n="fbUnavailable"></div>
     <button class="mbtn ghost" onclick="skipFeedback()" data-i18n="fbSkip"></button>
   </div>
@@ -461,7 +471,7 @@ const I18N = {
     errNetwork: "Network error. Please try again.",
     donateTitle: "This conversation is a gift to yourself",
     donateDesc: "If it moved you, give whatever feels right — and help keep this space open for others.",
-    amt2: "a cup of tea", amt6: "a kind gesture", amt10: "deep thanks",
+    amt2: "a cup of tea", amt6: "a kind gesture", amt10: "deep thanks", amtOther: "Other amount",
     donateChoose: "Choose an amount", donatePay: "Give",
     subTitle: "Stay in this conversation",
     subDesc: "Subscribe for unlimited conversations with the voice that has always been within you.",
@@ -515,7 +525,7 @@ const I18N = {
     errNetwork: "网络错误，请重试",
     donateTitle: "这段对话，是你给自己的礼物",
     donateDesc: "如果它触动了你，请随心打赏——也让这个空间为更多人敞开。",
-    amt2: "一杯茶", amt6: "一份心意", amt10: "深深感谢",
+    amt2: "一杯茶", amt6: "一份心意", amt10: "深深感谢", amtOther: "其他金额",
     donateChoose: "选择金额", donatePay: "打赏",
     subTitle: "留在这段对话里",
     subDesc: "订阅后，与那个一直在你心里的声音，无限对话。",
@@ -569,7 +579,7 @@ const I18N = {
     errNetwork: "通信エラーです。もう一度お試しください",
     donateTitle: "この対話は、あなた自身への贈りもの",
     donateDesc: "心が動いたら、無理のない範囲で——この場所を、誰かのために開いておく助けになります。",
-    amt2: "お茶一杯", amt6: "ささやかな気持ち", amt10: "心からの感謝",
+    amt2: "お茶一杯", amt6: "ささやかな気持ち", amt10: "心からの感謝", amtOther: "その他の金額",
     donateChoose: "金額を選んでください", donatePay: "贈る",
     subTitle: "この対話の中にいて",
     subDesc: "登録すると、いつもあなたの中にいる声と、無制限に話せます。",
@@ -623,7 +633,7 @@ const I18N = {
     errNetwork: "خطأ في الشبكة. حاول مرة أخرى",
     donateTitle: "هذه المحادثة هدية منك لنفسك",
     donateDesc: "إن لامست قلبك، أعطِ ما تراه مناسبًا — وساعد في إبقاء هذا المكان مفتوحًا للآخرين.",
-    amt2: "فنجان شاي", amt6: "لفتة طيبة", amt10: "شكر عميق",
+    amt2: "فنجان شاي", amt6: "لفتة طيبة", amt10: "شكر عميق", amtOther: "مبلغ آخر",
     donateChoose: "اختر مبلغًا", donatePay: "تبرّع",
     subTitle: "ابقَ في هذه المحادثة",
     subDesc: "اشترك لتحظى بمحادثات بلا حدود مع الصوت الذي كان دائمًا بداخلك.",
@@ -669,6 +679,7 @@ function applyI18n() {
   document.getElementById('userInput').placeholder = t('inputPlaceholder');
   document.getElementById('authEmail').placeholder = t('emailPh');
   document.getElementById('authPassword').placeholder = t('passwordPh');
+  document.getElementById('customAmt').placeholder = t('amtOther');
   document.getElementById('langSelect').value = lang;
   refreshAuthModalText();
 }
@@ -909,20 +920,24 @@ function maybePrompt(loggedIn) {
   // Feedback + donation: first at turn 6, then every 7 turns (6, 13, 20, ...).
   if (turns >= 6 && (turns - 6) % 7 === 0 && turns !== lastFeedbackTurn) {
     lastFeedbackTurn = turns;
-    setTimeout(() => showModal('feedbackModal'), 900);
+    setTimeout(() => { resetFeedback(); showModal('feedbackModal'); }, 900);
   }
 }
 
 // Persistent support entry (top-right) — opens the same feedback/donation modal anytime.
 function openSupport() { resetFeedback(); showModal('feedbackModal'); }
 function resetFeedback() {
-  fbRating = 0; fbLiked = null; selAmt = null;
+  fbRating = 0; fbLiked = null;
   paintStars();
   document.getElementById('likeYes').classList.remove('on');
   document.getElementById('likeNo').classList.remove('on');
-  document.querySelectorAll('.amt').forEach(b => b.classList.remove('on'));
-  const b = document.getElementById('donatePay'); b.disabled = true; b.textContent = t('donateChoose');
+  document.getElementById('customAmt').value = '';
   document.getElementById('fbMsg').style.display = 'none';
+  // Default the donation to $6 — clicking the button without choosing pays $6.
+  selAmt = 6;
+  document.querySelectorAll('.amt').forEach(b => b.classList.remove('on'));
+  document.getElementById('amt6').classList.add('on');
+  const b = document.getElementById('donatePay'); b.disabled = false; b.textContent = t('donatePay') + ' $6';
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────────
@@ -1000,9 +1015,21 @@ function showErr(el,msg){ el.textContent=msg; el.style.display='block'; }
 function pickAmt(a, el) {
   selAmt = a;
   document.querySelectorAll('.amt').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
+  if (el) el.classList.add('on');
+  const ci = document.getElementById('customAmt'); if (ci) ci.value = '';
   const b = document.getElementById('donatePay');
   b.disabled = false; b.textContent = t('donatePay') + ' $' + a;
+}
+// Custom amount entry
+function pickCustom() {
+  const v = parseFloat(document.getElementById('customAmt').value);
+  document.querySelectorAll('.amt').forEach(b=>b.classList.remove('on'));
+  const b = document.getElementById('donatePay');
+  if (Number.isFinite(v) && v >= 1 && v <= 999) {
+    selAmt = v; b.disabled = false; b.textContent = t('donatePay') + ' $' + v;
+  } else {
+    selAmt = null; b.disabled = true; b.textContent = t('donateChoose');
+  }
 }
 async function donate() {
   if (!selAmt) return;

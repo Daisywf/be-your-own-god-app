@@ -442,8 +442,10 @@ app.get('/api/history', authRequired, (req, res) => {
 // ── Donation (one-time) ──────────────────────────────────────────────────────
 app.post('/api/donate', authOptional, async (req, res) => {
   if (!stripe) return res.status(503).json({ error: 'Payments not configured' });
-  const { amount, sessionId } = req.body; // dollars: 2,6,10
-  if (![2, 6, 10].includes(amount)) return res.status(400).json({ error: 'Invalid amount' });
+  const { amount, sessionId } = req.body; // dollars — presets or a custom amount
+  const amt = Number(amount);
+  if (!Number.isFinite(amt) || amt < 1 || amt > 999) return res.status(400).json({ error: 'Invalid amount' });
+  const cents = Math.round(amt * 100);
   const paymentId = uuidv4();
   try {
     const session = await stripe.checkout.sessions.create({
@@ -453,7 +455,7 @@ app.post('/api/donate', authOptional, async (req, res) => {
         price_data: {
           currency: 'usd',
           product_data: { name: 'Be Your Own God — A gift to yourself' },
-          unit_amount: amount * 100,
+          unit_amount: cents,
         },
         quantity: 1,
       }],
@@ -462,7 +464,7 @@ app.post('/api/donate', authOptional, async (req, res) => {
       metadata: { paymentId, userId: req.user?.id || 'guest', kind: 'donation' },
     });
     db.prepare('INSERT INTO payments (id, user_id, type, amount_cents, stripe_session_id) VALUES (?, ?, ?, ?, ?)')
-      .run(paymentId, req.user?.id || null, 'donation', amount * 100, session.id);
+      .run(paymentId, req.user?.id || null, 'donation', cents, session.id);
     res.json({ url: session.url });
   } catch (e) {
     console.error('Stripe donate error:', e);
