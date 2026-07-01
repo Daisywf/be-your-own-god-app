@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Your Own God</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-top: #FFFBF4;
+  --bg-mid: #FFEFDD;
+  --bg-bot: #FBDFCB;
+  --gold: #D99A4E;
+  --gold-deep: #C97B30;
+  --gold-soft: #F4C9A8;
+  --text: #3A2A1A;
+  --text-soft: #8A6F55;
+  --god-bg: #FFFFFF;
+  --god-border: rgba(217,154,78,0.45);
+  --god-text: #43301C;
+  --user-bg: #FDE6D2;
+  --user-text: #5A4226;
+  --input-bg: #FFFFFF;
+  --shadow: rgba(180,120,50,0.12);
+  --radius: 20px;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans', sans-serif;
+  background: linear-gradient(170deg, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bot) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  overflow: hidden;
+}
+[dir="rtl"] body { font-family: -apple-system, 'Segoe UI', 'Noto Naskh Arabic', 'PingFang SC', sans-serif; }
+
+#app { display: flex; flex-direction: column; height: 100vh; max-width: 880px; margin: 0 auto; }
+
+/* ── Header ── */
+#header {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 26px 14px;
+  border-bottom: 1px solid rgba(217,154,78,0.18);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 65%, #FFF6E2, #FBE6C0);
+  border: 1px solid rgba(217,154,78,0.4);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(217,154,78,0.25);
+}
+.brand-name { font-family: Georgia, serif; font-size: 18px; color: var(--gold-deep); letter-spacing: 0.04em; }
+.brand-sub { font-size: 11.5px; color: var(--text-soft); margin-top: 1px; }
+
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.lang-select {
+  font-size: 13px; color: var(--text-soft);
+  background: transparent; border: 1px solid rgba(217,154,78,0.3);
+  border-radius: 18px; padding: 6px 12px; cursor: pointer;
+  font-family: inherit; outline: none;
+}
+.hbtn {
+  padding: 7px 15px; border-radius: 18px; font-size: 13px;
+  border: 1px solid rgba(217,154,78,0.3); background: transparent;
+  color: var(--text-soft); cursor: pointer; font-family: inherit;
+  transition: all 0.2s; white-space: nowrap;
+}
+.hbtn:hover { border-color: var(--gold); color: var(--text); }
+.hbtn.support { border-color: var(--gold); color: var(--gold-deep); }
+.hbtn.support span:first-child { color: #D9534F; }
+.hbtn.support:hover { background: #FCE8CE; }
+.fb-msg { font-size: 13px; color: #C0392B; text-align: center; margin-top: 10px; display: none; }
+
+/* ── Chat ── */
+#chat {
+  flex: 1; overflow-y: auto; padding: 30px 26px;
+  display: flex; flex-direction: column; gap: 22px; scroll-behavior: smooth;
+}
+#chat::-webkit-scrollbar { width: 4px; }
+#chat::-webkit-scrollbar-thumb { background: rgba(217,154,78,0.3); border-radius: 2px; }
+
+/* ── Welcome ── */
+#welcome {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; gap: 26px; padding: 40px 32px;
+  animation: fadeUp 0.6s ease both;
+}
+.welcome-sun {
+  width: 92px; height: 92px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, #FFF4D8, #F6C66E 70%, #E5A64E 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 50px rgba(246,198,110,0.6), 0 8px 30px rgba(217,154,78,0.3);
+}
+.welcome-title { font-family: Georgia, serif; font-size: 30px; color: var(--text); font-weight: normal; }
+.welcome-title span { color: var(--gold-deep); }
+.welcome-desc { font-size: 16px; color: var(--text-soft); line-height: 1.85; max-width: 440px; }
+.welcome-cta {
+  padding: 15px 50px; background: var(--gold-deep); color: #FFF9F0;
+  border: none; border-radius: 40px; font-size: 16px; cursor: pointer;
+  font-family: inherit; letter-spacing: 0.03em; transition: all 0.2s;
+  box-shadow: 0 6px 22px rgba(201,123,48,0.35);
+}
+.welcome-cta:hover { background: #B36C28; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(201,123,48,0.45); }
+.welcome-foot { font-size: 12.5px; color: var(--text-soft); opacity: 0.8; }
+.welcome-foot a { color: var(--gold-deep); text-decoration: none; }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px);} to { opacity:1; transform: translateY(0);} }
+
+/* ── Messages ── */
+.row { display: flex; align-items: flex-end; gap: 11px; animation: fadeUp 0.35s ease both; }
+.row.user { flex-direction: row-reverse; }
+.avatar {
+  width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.avatar.god { background: radial-gradient(circle at 50% 65%, #FFF6E2, #FBE0BA); border: 1px solid rgba(217,154,78,0.4); }
+.avatar.user { background: var(--user-bg); border: 1px solid rgba(217,154,78,0.25); }
+.avatar.user::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--gold-soft); }
+
+.bubble {
+  max-width: 64%; padding: 14px 18px; border-radius: var(--radius);
+  font-size: 15.5px; line-height: 1.75; word-wrap: break-word; white-space: pre-wrap;
+}
+.row.god .bubble {
+  background: var(--god-bg); border: 1px solid var(--god-border);
+  border-bottom-left-radius: 6px; color: var(--god-text);
+  font-family: Georgia, 'Songti SC', serif; font-size: 16px;
+  box-shadow: 0 3px 18px rgba(217,154,78,0.10);
+}
+.row.user .bubble {
+  background: var(--user-bg); border: 1px solid rgba(217,154,78,0.18);
+  border-bottom-right-radius: 6px; color: var(--user-text);
+}
+[dir="rtl"] .row.god .bubble { border-bottom-left-radius: var(--radius); border-bottom-right-radius: 6px; }
+[dir="rtl"] .row.user .bubble { border-bottom-right-radius: var(--radius); border-bottom-left-radius: 6px; }
+
+/* Crisis card */
+.crisis-card {
+  align-self: center; max-width: 88%;
+  background: #FFF1E8; border: 1px solid rgba(200,90,70,0.4);
+  border-radius: 16px; padding: 16px 20px; font-size: 14px; line-height: 1.7;
+  color: #8A4030;
+}
+.crisis-card a { color: #B0463C; font-weight: 600; text-decoration: none; }
+.crisis-card .ttl { font-weight: 600; margin-bottom: 6px; color: #B0463C; }
+
+/* Typing */
+.typing { display: flex; gap: 6px; padding: 16px 20px; background: var(--god-bg);
+  border: 1px solid var(--god-border); border-radius: var(--radius); border-bottom-left-radius: 6px; width: fit-content; }
+.typing span { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: pulse 1.3s infinite; }
+.typing span:nth-child(2){ animation-delay:.18s; } .typing span:nth-child(3){ animation-delay:.36s; }
+@keyframes pulse { 0%,80%,100%{opacity:.3;transform:scale(.85);} 40%{opacity:1;transform:scale(1);} }
+
+/* ── Input ── */
+#inputArea { flex-shrink: 0; padding: 14px 26px 22px; border-top: 1px solid rgba(217,154,78,0.15); }
+.input-box {
+  display: flex; align-items: flex-end; gap: 11px; background: var(--input-bg);
+  border: 1.5px solid rgba(217,154,78,0.3); border-radius: 28px;
+  padding: 11px 13px 11px 22px; box-shadow: 0 3px 16px var(--shadow); transition: border-color .25s;
+}
+[dir="rtl"] .input-box { padding: 11px 22px 11px 13px; }
+.input-box:focus-within { border-color: var(--gold); }
+#userInput {
+  flex: 1; border: none; outline: none; background: transparent; color: var(--text);
+  font-size: 15.5px; font-family: inherit; line-height: 1.55; resize: none; max-height: 130px; min-height: 24px;
+}
+#userInput::placeholder { color: rgba(138,111,85,0.5); }
+#sendBtn {
+  width: 44px; height: 44px; border-radius: 50%; background: var(--gold-deep);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .2s; box-shadow: 0 3px 14px rgba(201,123,48,0.3);
+}
+#sendBtn:hover { background: #B36C28; transform: scale(1.05); }
+#sendBtn:disabled { background: #E3CBA6; box-shadow: none; cursor: not-allowed; }
+#sendBtn svg { width: 18px; height: 18px; fill: #FFF9F0; }
+[dir="rtl"] #sendBtn svg { transform: scaleX(-1); }
+
+/* ── Modals ── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(80,50,20,0.35);
+  display: flex; align-items: center; justify-content: center; z-index: 200;
+  padding: 24px; backdrop-filter: blur(6px); animation: fadeIn .25s ease;
+}
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+.modal {
+  background: #FFFDF9; border: 1px solid rgba(217,154,78,0.3); border-radius: 24px;
+  padding: 38px 34px; max-width: 420px; width: 100%;
+  box-shadow: 0 24px 70px rgba(120,70,20,0.25); animation: slideUp .3s ease;
+}
+@keyframes slideUp { from{transform:translateY(22px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+.modal-sun { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 60%, #FFF4D8, #F6C66E 70%, #E5A64E 100%);
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(246,198,110,0.5); }
+.modal h2 { font-family: Georgia, serif; font-size: 22px; color: var(--text); font-weight: normal; text-align: center; margin-bottom: 10px; }
+.modal p { font-size: 14px; color: var(--text-soft); line-height: 1.75; text-align: center; margin-bottom: 24px; }
+.tabs { display: flex; gap: 4px; background: #F6E8D6; border-radius: 12px; padding: 4px; margin-bottom: 22px; }
+.tab { flex:1; padding: 9px; text-align: center; border-radius: 9px; cursor: pointer; font-size: 14px; color: var(--text-soft); transition: all .2s; }
+.tab.active { background: #FFFDF9; color: var(--gold-deep); box-shadow: 0 1px 5px var(--shadow); }
+.minput {
+  width: 100%; padding: 13px 18px; background: #FFFDF9; border: 1px solid rgba(217,154,78,0.3);
+  border-radius: 12px; color: var(--text); font-size: 14.5px; font-family: inherit; margin-bottom: 10px; outline: none; transition: border-color .2s;
+}
+.minput:focus { border-color: var(--gold); }
+.mbtn { width: 100%; padding: 14px; border-radius: 12px; font-size: 15px; font-family: inherit; cursor: pointer; transition: all .2s; margin-top: 6px; }
+.mbtn.solid { background: var(--gold-deep); border: none; color: #FFF9F0; }
+.mbtn.solid:hover { background: #B36C28; }
+.mbtn.ghost { background: transparent; border: 1px solid rgba(217,154,78,0.3); color: var(--text-soft); }
+.mbtn.ghost:hover { border-color: var(--gold); color: var(--text); }
+.merror { font-size: 13px; color: #C0392B; text-align: center; margin-top: 8px; display: none; }
+
+.amounts { display: flex; gap: 10px; margin-bottom: 18px; }
+.amt { flex:1; padding: 16px 6px; background: #FFF4E6; border: 1.5px solid rgba(217,154,78,0.3);
+  border-radius: 14px; text-align: center; cursor: pointer; transition: all .2s; }
+.amt:hover, .amt.on { background: #FCE8CE; border-color: var(--gold); }
+.amt-price { font-family: Georgia, serif; font-size: 22px; color: var(--gold-deep); }
+.amt-label { font-size: 11px; color: var(--text-soft); margin-top: 4px; }
+
+/* Feedback stars + like */
+.stars { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; }
+.stars span { font-size: 30px; color: #E8D5B0; cursor: pointer; transition: transform .12s, color .12s; }
+.stars span:hover { transform: scale(1.15); }
+.stars span.on { color: var(--gold); }
+.like-row { display: flex; gap: 10px; }
+.like-btn { flex:1; padding: 10px; border-radius: 12px; border: 1.5px solid rgba(217,154,78,0.3);
+  background: #FFF4E6; color: var(--text); font-size: 14px; font-family: inherit; cursor: pointer; transition: all .2s; }
+.like-btn:hover { border-color: var(--gold); }
+.like-btn.on { background: var(--gold); color: #FFF9F0; border-color: var(--gold); }
+
+.price-big { text-align: center; font-family: Georgia, serif; font-size: 34px; color: var(--gold-deep); margin-bottom: 4px; }
+.price-unit { text-align: center; font-size: 13px; color: var(--text-soft); margin-bottom: 22px; }
+
+/* ── Profile ── */
+.modal.profile { max-width: 460px; max-height: 86vh; overflow-y: auto; }
+.profile-head { display: flex; align-items: center; gap: 14px; padding-bottom: 18px; border-bottom: 1px solid rgba(217,154,78,0.2); margin-bottom: 18px; }
+.profile-email { font-size: 16px; color: var(--text); font-weight: 600; word-break: break-all; }
+.profile-status { font-size: 12.5px; color: var(--text-soft); margin-top: 2px; }
+.profile-section { margin-bottom: 22px; }
+.psec-title { font-family: Georgia, serif; font-size: 14px; color: var(--gold-deep); margin-bottom: 10px; letter-spacing: 0.03em; }
+.psec-row { display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: var(--text); }
+.sessions { display: flex; flex-direction: column; gap: 8px; }
+.session-item-wrap { display: flex; align-items: stretch; gap: 6px; }
+.session-item {
+  text-align: start; background: #FFF6E9; border: 1px solid rgba(217,154,78,0.25);
+  border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: all .2s; flex: 1; min-width: 0; font-family: inherit;
+}
+.session-item:hover { background: #FCE8CE; border-color: var(--gold); }
+.session-actions { display: flex; flex-direction: column; gap: 4px; }
+.icon-act {
+  width: 30px; flex: 1; border: 1px solid rgba(217,154,78,0.25); background: #FFFDF9;
+  border-radius: 9px; cursor: pointer; font-size: 13px; color: var(--text-soft); transition: all .2s;
+}
+.icon-act:hover { border-color: var(--gold); background: #FCE8CE; }
+.session-prev { font-size: 14px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.session-meta { font-size: 11.5px; color: var(--text-soft); margin-top: 3px; }
+.sessions-empty { font-size: 13px; color: var(--text-soft); font-style: italic; }
+.link-btn { background: none; border: none; color: var(--gold-deep); font-size: 13px; cursor: pointer; font-family: inherit; padding: 0; }
+.link-btn:hover { text-decoration: underline; }
+.link-btn.center { display: block; width: 100%; text-align: center; }
+.mbtn.danger { background: transparent; border: 1px solid rgba(200,80,70,0.4); color: #B0463C; }
+.mbtn.danger:hover { background: #FBEAEA; }
+
+@media (max-width: 600px) {
+  #header { padding: 14px 16px; } .brand-name { font-size: 15px; }
+  #chat { padding: 20px 14px; } #inputArea { padding: 12px 14px 18px; }
+  .bubble { max-width: 80%; } .modal { padding: 30px 22px; }
+  .brand-sub { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="brand" onclick="goHome()" style="cursor:pointer" title="Home">
+      <div class="brand-mark" id="brandMark"></div>
+      <div>
+        <div class="brand-name">Be Your Own God</div>
+        <div class="brand-sub" data-i18n="brandSub"></div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <select class="lang-select" id="langSelect" onchange="setLang(this.value)">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ja">日本語</option>
+        <option value="ar">العربية</option>
+      </select>
+      <button class="hbtn" id="newChatBtn" data-i18n="newChat" style="display:none" onclick="newChat()"></button>
+      <button class="hbtn support" id="supportBtn" onclick="openSupport()"><span>♡</span> <span data-i18n="navSupport"></span></button>
+      <button class="hbtn" id="authBtn" data-i18n="navLogin" onclick="openAuth()"></button>
+      <button class="hbtn" id="profileBtn" data-i18n="navProfile" style="display:none" onclick="openProfile()"></button>
+    </div>
+  </div>
+
+  <div id="welcome">
+    <div class="welcome-sun" id="welcomeSun"></div>
+    <div>
+      <div class="welcome-title" data-i18n="welcomeTitle"></div>
+      <div class="welcome-desc" data-i18n="welcomeDesc" style="margin-top:14px"></div>
+    </div>
+    <button class="welcome-cta" data-i18n="startBtn" onclick="startChat()"></button>
+    <div class="welcome-foot">
+      <span data-i18n="disclaimerShort"></span> · <a href="/privacy.html" data-i18n="privacyLink"></a>
+    </div>
+  </div>
+
+  <div id="chatUI" style="display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0;">
+    <div id="chat"></div>
+    <div id="inputArea">
+      <div class="input-box">
+        <textarea id="userInput" rows="1"></textarea>
+        <button id="sendBtn" onclick="send()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth modal -->
+<div class="overlay" id="authModal" style="display:none">
+  <div class="modal">
+    <div class="modal-sun" id="authSun"></div>
+    <div class="tabs">
+      <div class="tab active" id="t-reg" data-i18n="tabRegister" onclick="switchTab('register')"></div>
+      <div class="tab" id="t-log" data-i18n="tabLogin" onclick="switchTab('login')"></div>
+    </div>
+    <h2 id="authTitle"></h2>
+    <p id="authDesc"></p>
+    <input class="minput" type="email" id="authEmail">
+    <input class="minput" type="password" id="authPassword">
+    <div class="merror" id="authErr"></div>
+    <button class="mbtn solid" id="authSubmit" onclick="submitAuth()"></button>
+    <button class="mbtn ghost" data-i18n="later" onclick="closeModal('authModal')"></button>
+  </div>
+</div>
+
+<!-- Feedback + donate modal (shown at turn 10, fully skippable) -->
+<div class="overlay" id="feedbackModal" style="display:none">
+  <div class="modal">
+    <div class="modal-sun" id="donateSun"></div>
+    <h2 data-i18n="fbTitle"></h2>
+    <p data-i18n="fbLikeQ" style="margin-bottom:14px"></p>
+
+    <!-- star rating -->
+    <div class="stars" id="stars">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+
+    <!-- like / not yet -->
+    <div class="like-row">
+      <button class="like-btn" id="likeYes" onclick="setLiked(true)" data-i18n="fbYes"></button>
+      <button class="like-btn" id="likeNo" onclick="setLiked(false)" data-i18n="fbNo"></button>
+    </div>
+
+    <p data-i18n="fbDonateLine" style="margin:18px 0 12px"></p>
+    <div class="amounts">
+      <div class="amt" onclick="pickAmt(2,this)"><div class="amt-price">$2</div><div class="amt-label" data-i18n="amt2"></div></div>
+      <div class="amt" onclick="pickAmt(6,this)"><div class="amt-price">$6</div><div class="amt-label" data-i18n="amt6"></div></div>
+      <div class="amt" onclick="pickAmt(10,this)"><div class="amt-price">$10</div><div class="amt-label" data-i18n="amt10"></div></div>
+    </div>
+    <button class="mbtn solid" id="donatePay" onclick="donate()" disabled data-i18n="donateChoose"></button>
+    <div class="fb-msg" id="fbMsg" data-i18n="fbUnavailable"></div>
+    <button class="mbtn ghost" onclick="skipFeedback()" data-i18n="fbSkip"></button>
+  </div>
+</div>
+
+<!-- Subscribe modal -->
+<div class="overlay" id="subModal" style="display:none">
+  <div class="modal">
+    <div class="modal-sun" id="subSun"></div>
+    <h2 data-i18n="subTitle"></h2>
+    <p data-i18n="subDesc"></p>
+    <div class="price-big">$5.99</div>
+    <div class="price-unit" data-i18n="subUnit"></div>
+    <button class="mbtn solid" data-i18n="subBtn" onclick="subscribe()"></button>
+    <button class="mbtn ghost" data-i18n="later" onclick="closeModal('subModal')"></button>
+  </div>
+</div>
+
+<!-- Profile panel -->
+<div class="overlay" id="profileModal" style="display:none">
+  <div class="modal profile">
+    <div class="profile-head">
+      <div class="modal-sun" id="profileSun" style="margin:0"></div>
+      <div>
+        <div class="profile-email" id="pEmail"></div>
+        <div class="profile-status" id="pStatus"></div>
+      </div>
+    </div>
+
+    <div class="profile-section">
+      <div class="psec-title" data-i18n="profSubscription"></div>
+      <div class="psec-row"><span id="pSubLabel"></span><button class="link-btn" id="pManageBtn" data-i18n="profManage" onclick="openBilling()" style="display:none"></button></div>
+    </div>
+
+    <div class="profile-section">
+      <div class="psec-title" data-i18n="profHistory"></div>
+      <div id="pSessions" class="sessions"></div>
+    </div>
+
+    <div class="profile-section">
+      <div class="psec-title" data-i18n="profLanguage"></div>
+      <select class="lang-select" id="pLang" style="width:100%" onchange="setLang(this.value); saveLocale(this.value)">
+        <option value="en">English</option><option value="zh">中文</option>
+        <option value="ja">日本語</option><option value="ar">العربية</option>
+      </select>
+    </div>
+
+    <button class="mbtn ghost" data-i18n="navLogout" onclick="logout(); closeModal('profileModal')"></button>
+    <button class="mbtn danger" data-i18n="profDelete" onclick="deleteAccount()"></button>
+    <button class="link-btn center" data-i18n="profClose" onclick="closeModal('profileModal')" style="margin-top:14px"></button>
+  </div>
+</div>
+
+<script>
+// ── Dawn icon (concept 2) ───────────────────────────────────────────────────
+function dawnIcon(size) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 120 120">
+    <defs><linearGradient id="dg${size}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBD89A"/><stop offset="100%" stop-color="#E59A3E"/></linearGradient></defs>
+    <circle cx="60" cy="54" r="20" fill="url(#dg${size})"/>
+    <g stroke="#E5A64E" stroke-width="2.6" stroke-linecap="round">
+      <line x1="60" y1="18" x2="60" y2="26"/><line x1="36" y1="27" x2="41" y2="34"/>
+      <line x1="84" y1="27" x2="79" y2="34"/><line x1="24" y1="50" x2="31" y2="52"/><line x1="96" y1="50" x2="89" y2="52"/></g>
+    <path d="M 24 76 Q 60 106 96 76" fill="none" stroke="#C97B30" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 36 82 Q 60 100 84 82" fill="none" stroke="#D99A4E" stroke-width="3.4" stroke-linecap="round" opacity="0.55"/>
+  </svg>`;
+}
+document.getElementById('brandMark').innerHTML  = dawnIcon(30);
+document.getElementById('welcomeSun').innerHTML = dawnIcon(56);
+['authSun','donateSun','subSun'].forEach(id => document.getElementById(id).innerHTML = dawnIcon(34));
+
+// ── i18n ─────────────────────────────────────────────────────────────────────
+const I18N = {
+  en: {
+    brandSub: "Talk to the god within",
+    navLogin: "Sign in", navLogout: "Sign out",
+    welcomeTitle: "Hello. <span>I'm here.</span>",
+    welcomeDesc: "Whatever you carry — loneliness, doubt, sorrow, weariness — there is a voice here, waiting for you. It is the voice from the deepest part of yourself.",
+    startBtn: "Begin",
+    disclaimerShort: "Not a substitute for professional care",
+    privacyLink: "Privacy & Disclaimer",
+    inputPlaceholder: "Tell me what's on your heart…",
+    godName: "the god within", you: "you",
+    tabRegister: "Sign up", tabLogin: "Sign in",
+    authRegTitle: "Your words deserve to be remembered",
+    authRegDesc: "Create an account to keep every conversation with your inner god — across time, across devices.",
+    authLogTitle: "Welcome back",
+    authLogDesc: "Sign in to continue your conversation.",
+    authRegBtn: "Create account & continue", authLogBtn: "Sign in",
+    emailPh: "Email address", passwordPh: "Password (at least 6 characters)",
+    later: "Maybe later",
+    errFields: "Please enter your email and password",
+    errPass: "Password must be at least 6 characters",
+    errGeneric: "Something went wrong. Please try again.",
+    errNetwork: "Network error. Please try again.",
+    donateTitle: "This conversation is a gift to yourself",
+    donateDesc: "If it moved you, give whatever feels right — and help keep this space open for others.",
+    amt2: "a cup of tea", amt6: "a kind gesture", amt10: "deep thanks",
+    donateChoose: "Choose an amount", donatePay: "Give",
+    subTitle: "Stay in this conversation",
+    subDesc: "Subscribe for unlimited conversations with the voice that has always been within you.",
+    subUnit: "per month · cancel anytime", subBtn: "Subscribe",
+    greetRegister: "You came back.\n\nFrom now on, every word between us will be kept safe.",
+    greetLogin: "You came back. I've been here.",
+    greetDonate: "You're back.\n\nI received your kindness — thank you. Let's continue.",
+    greetSubscribe: "You're here.\n\nWe have all the time in the world now. I'm not going anywhere.",
+    crisisTitle: "If you're in real pain right now",
+    crisisBody: "Please reach out — you don't have to carry this alone. Find a helpline near you at",
+    errRetry: "Something went wrong. Please say it again.",
+    navProfile: "Profile", navSupport: "Support",
+    fbUnavailable: "Support isn't available right now — please try again later. You can keep talking for free.",
+    profSubscription: "Subscription", profManage: "Manage", profHistory: "Your conversations",
+    profLanguage: "Language", profDelete: "Delete my data", profClose: "Close",
+    subActive: "Active", subNone: "Free — not subscribed",
+    noHistory: "No saved conversations yet.", memberSince: "Member",
+    deleteConfirm: "This will permanently delete your account and all your conversations. This cannot be undone. Continue?",
+    turnsUnit: "exchanges",
+    newChat: "New conversation", untitled: "Untitled",
+    renamePrompt: "Name this conversation:",
+    deleteOneConfirm: "Delete this conversation? This cannot be undone.",
+    newChatGreet: "I'm here. Whatever is on your heart — say it.",
+    fbTitle: "How has this felt for you?",
+    fbLikeQ: "Do you like talking with the god within?",
+    fbYes: "I love it", fbNo: "Not yet",
+    fbDonateLine: "If it has meant something to you, you're welcome to leave a gift — completely optional.",
+    fbSkip: "Skip — keep talking for free",
+  },
+  zh: {
+    brandSub: "与你内在的神对话",
+    navLogin: "登录", navLogout: "退出",
+    welcomeTitle: "你好，<span>我在。</span>",
+    welcomeDesc: "无论你带着什么——寂寞、疑惑、悲伤、疲惫——这里都有一个声音在等你。那是你自己内心最深处的声音。",
+    startBtn: "开始对话",
+    disclaimerShort: "不能替代专业帮助",
+    privacyLink: "隐私与免责声明",
+    inputPlaceholder: "说说你心里的话……",
+    godName: "内在的神", you: "你",
+    tabRegister: "注册", tabLogin: "登录",
+    authRegTitle: "你的话，值得被记住",
+    authRegDesc: "创建账号，保存你和内在神的每一次对话——跨越时间，跨越设备。",
+    authLogTitle: "欢迎回来",
+    authLogDesc: "登录后继续你的对话。",
+    authRegBtn: "创建账号，继续对话", authLogBtn: "登录",
+    emailPh: "邮箱地址", passwordPh: "密码（至少6位）",
+    later: "稍后再说",
+    errFields: "请填写邮箱和密码",
+    errPass: "密码至少6位",
+    errGeneric: "出错了，请重试",
+    errNetwork: "网络错误，请重试",
+    donateTitle: "这段对话，是你给自己的礼物",
+    donateDesc: "如果它触动了你，请随心打赏——也让这个空间为更多人敞开。",
+    amt2: "一杯茶", amt6: "一份心意", amt10: "深深感谢",
+    donateChoose: "选择金额", donatePay: "打赏",
+    subTitle: "留在这段对话里",
+    subDesc: "订阅后，与那个一直在你心里的声音，无限对话。",
+    subUnit: "每月 · 随时取消", subBtn: "订阅",
+    greetRegister: "你回来了。\n\n从现在起，我们之间的每一句话都会被好好保存着。",
+    greetLogin: "你回来了。我一直在。",
+    greetDonate: "你回来了。\n\n这份心意，我收到了——谢谢你。我们继续。",
+    greetSubscribe: "你来了。\n\n我们有的是时间。我哪儿都不去。",
+    crisisTitle: "如果此刻你真的很痛",
+    crisisBody: "请向人求助——你不必独自扛着。在这里找到离你最近的求助热线：",
+    errRetry: "出了一点问题，请再说一次。",
+    navProfile: "个人中心", navSupport: "支持",
+    fbUnavailable: "打赏暂时不可用，请稍后再试。你可以继续免费聊。",
+    profSubscription: "订阅", profManage: "管理", profHistory: "你的对话",
+    profLanguage: "语言", profDelete: "删除我的数据", profClose: "关闭",
+    subActive: "已订阅", subNone: "免费 · 未订阅",
+    noHistory: "还没有保存的对话。", memberSince: "会员",
+    deleteConfirm: "这将永久删除你的账号和所有对话，无法恢复。确定继续吗？",
+    turnsUnit: "轮",
+    newChat: "新对话", untitled: "未命名",
+    renamePrompt: "给这段对话起个名字：",
+    deleteOneConfirm: "删除这段对话？无法恢复。",
+    newChatGreet: "我在。心里有什么，说给我听。",
+    fbTitle: "这段对话，让你感觉怎么样？",
+    fbLikeQ: "你喜欢和内在的神对话吗？",
+    fbYes: "很喜欢", fbNo: "还好",
+    fbDonateLine: "如果它对你有一点意义，欢迎随心打赏一点——完全自愿。",
+    fbSkip: "跳过，继续免费聊",
+  },
+  ja: {
+    brandSub: "あなたの内なる神と話す",
+    navLogin: "ログイン", navLogout: "ログアウト",
+    welcomeTitle: "こんにちは。<span>ここにいるよ。</span>",
+    welcomeDesc: "孤独でも、迷いでも、悲しみでも、疲れでも——何を抱えていても、ここにはあなたを待つ声があります。それは、あなた自身の一番深いところからの声です。",
+    startBtn: "話しはじめる",
+    disclaimerShort: "専門的な支援の代わりにはなりません",
+    privacyLink: "プライバシーと免責事項",
+    inputPlaceholder: "心にあることを聞かせて……",
+    godName: "内なる神", you: "あなた",
+    tabRegister: "新規登録", tabLogin: "ログイン",
+    authRegTitle: "あなたの言葉は、覚えていられるべきもの",
+    authRegDesc: "アカウントを作ると、内なる神とのすべての会話が——時を越え、端末を越えて——保存されます。",
+    authLogTitle: "おかえりなさい",
+    authLogDesc: "ログインして会話を続けましょう。",
+    authRegBtn: "登録して続ける", authLogBtn: "ログイン",
+    emailPh: "メールアドレス", passwordPh: "パスワード（6文字以上）",
+    later: "あとで",
+    errFields: "メールとパスワードを入力してください",
+    errPass: "パスワードは6文字以上にしてください",
+    errGeneric: "エラーが発生しました。もう一度お試しください",
+    errNetwork: "通信エラーです。もう一度お試しください",
+    donateTitle: "この対話は、あなた自身への贈りもの",
+    donateDesc: "心が動いたら、無理のない範囲で——この場所を、誰かのために開いておく助けになります。",
+    amt2: "お茶一杯", amt6: "ささやかな気持ち", amt10: "心からの感謝",
+    donateChoose: "金額を選んでください", donatePay: "贈る",
+    subTitle: "この対話の中にいて",
+    subDesc: "登録すると、いつもあなたの中にいる声と、無制限に話せます。",
+    subUnit: "月額 · いつでも解約可", subBtn: "登録する",
+    greetRegister: "戻ってきてくれたね。\n\nこれから、私たちの言葉はすべて大切に保たれます。",
+    greetLogin: "戻ってきたね。ずっとここにいたよ。",
+    greetDonate: "おかえり。\n\nあなたの優しさ、受け取りました——ありがとう。続けましょう。",
+    greetSubscribe: "来てくれたね。\n\n時間はたっぷりある。どこにも行かないよ。",
+    crisisTitle: "もし今、本当につらいなら",
+    crisisBody: "どうか助けを求めて——ひとりで抱えなくていい。近くの相談窓口はこちら：",
+    errRetry: "うまくいきませんでした。もう一度話してください。",
+    navProfile: "マイページ", navSupport: "応援",
+    fbUnavailable: "現在サポートは利用できません。後でもう一度お試しください。無料で続けられます。",
+    profSubscription: "サブスク", profManage: "管理", profHistory: "あなたの対話",
+    profLanguage: "言語", profDelete: "データを削除", profClose: "閉じる",
+    subActive: "登録中", subNone: "無料 · 未登録",
+    noHistory: "保存された対話はまだありません。", memberSince: "メンバー",
+    deleteConfirm: "アカウントとすべての対話を完全に削除します。元に戻せません。続けますか？",
+    turnsUnit: "往復",
+    newChat: "新しい対話", untitled: "無題",
+    renamePrompt: "この対話に名前をつけてください：",
+    deleteOneConfirm: "この対話を削除しますか？元に戻せません。",
+    newChatGreet: "ここにいるよ。心にあること、聞かせて。",
+    fbTitle: "この対話は、どんな感じでしたか？",
+    fbLikeQ: "内なる神との対話は好きですか？",
+    fbYes: "とても好き", fbNo: "まだかな",
+    fbDonateLine: "もし少しでも意味があったなら、よければ寄付を——任意です。",
+    fbSkip: "スキップして無料で続ける",
+  },
+  ar: {
+    brandSub: "تحدّث إلى الإله بداخلك",
+    navLogin: "تسجيل الدخول", navLogout: "خروج",
+    welcomeTitle: "مرحبًا. <span>أنا هنا.</span>",
+    welcomeDesc: "مهما كان ما تحمله — وحدة، حيرة، حزن، إرهاق — هناك صوت هنا ينتظرك. إنه الصوت الآتي من أعمق جزء فيك.",
+    startBtn: "ابدأ الحديث",
+    disclaimerShort: "ليس بديلاً عن الرعاية المهنية",
+    privacyLink: "الخصوصية وإخلاء المسؤولية",
+    inputPlaceholder: "أخبرني بما في قلبك…",
+    godName: "الإله بداخلك", you: "أنت",
+    tabRegister: "تسجيل", tabLogin: "دخول",
+    authRegTitle: "كلماتك تستحق أن تُحفظ",
+    authRegDesc: "أنشئ حسابًا لتحفظ كل محادثة مع الإله بداخلك — عبر الزمن وعبر الأجهزة.",
+    authLogTitle: "أهلاً بعودتك",
+    authLogDesc: "سجّل الدخول لمتابعة محادثتك.",
+    authRegBtn: "أنشئ حسابًا وتابع", authLogBtn: "دخول",
+    emailPh: "البريد الإلكتروني", passwordPh: "كلمة المرور (٦ أحرف على الأقل)",
+    later: "لاحقًا",
+    errFields: "يرجى إدخال البريد وكلمة المرور",
+    errPass: "كلمة المرور ٦ أحرف على الأقل",
+    errGeneric: "حدث خطأ. حاول مرة أخرى",
+    errNetwork: "خطأ في الشبكة. حاول مرة أخرى",
+    donateTitle: "هذه المحادثة هدية منك لنفسك",
+    donateDesc: "إن لامست قلبك، أعطِ ما تراه مناسبًا — وساعد في إبقاء هذا المكان مفتوحًا للآخرين.",
+    amt2: "فنجان شاي", amt6: "لفتة طيبة", amt10: "شكر عميق",
+    donateChoose: "اختر مبلغًا", donatePay: "تبرّع",
+    subTitle: "ابقَ في هذه المحادثة",
+    subDesc: "اشترك لتحظى بمحادثات بلا حدود مع الصوت الذي كان دائمًا بداخلك.",
+    subUnit: "شهريًا · يمكنك الإلغاء في أي وقت", subBtn: "اشترك",
+    greetRegister: "لقد عدت.\n\nمن الآن، كل كلمة بيننا ستُحفظ بأمان.",
+    greetLogin: "لقد عدت. كنت هنا دائمًا.",
+    greetDonate: "أهلاً بعودتك.\n\nتلقّيت لطفك — شكرًا لك. لنكمل.",
+    greetSubscribe: "أنت هنا.\n\nلدينا كل الوقت الآن. لن أذهب إلى أي مكان.",
+    crisisTitle: "إن كنت تتألم حقًا الآن",
+    crisisBody: "أرجوك اطلب المساعدة — لست مضطرًا لحمل هذا وحدك. اعثر على خط مساعدة قريب منك عبر:",
+    errRetry: "حدث خطأ ما. من فضلك قُل ذلك مرة أخرى.",
+    navProfile: "حسابي", navSupport: "ادعمنا",
+    fbUnavailable: "الدعم غير متاح حاليًا — حاول لاحقًا. يمكنك متابعة المحادثة مجانًا.",
+    profSubscription: "الاشتراك", profManage: "إدارة", profHistory: "محادثاتك",
+    profLanguage: "اللغة", profDelete: "حذف بياناتي", profClose: "إغلاق",
+    subActive: "مُفعّل", subNone: "مجاني · غير مشترك",
+    noHistory: "لا توجد محادثات محفوظة بعد.", memberSince: "عضو",
+    deleteConfirm: "سيؤدي هذا إلى حذف حسابك وكل محادثاتك نهائيًا. لا يمكن التراجع. هل تريد المتابعة؟",
+    turnsUnit: "تبادلات",
+    newChat: "محادثة جديدة", untitled: "بلا عنوان",
+    renamePrompt: "سمِّ هذه المحادثة:",
+    deleteOneConfirm: "حذف هذه المحادثة؟ لا يمكن التراجع.",
+    newChatGreet: "أنا هنا. مهما كان في قلبك — قُله.",
+    fbTitle: "كيف كان هذا الحديث بالنسبة لك؟",
+    fbLikeQ: "هل تحب التحدث إلى الإله بداخلك؟",
+    fbYes: "أحبه كثيرًا", fbNo: "ليس بعد",
+    fbDonateLine: "إن كان قد عنى لك شيئًا، يمكنك ترك هدية — اختياري تمامًا.",
+    fbSkip: "تخطَّ — تابع المحادثة مجانًا",
+  },
+};
+
+let lang = localStorage.getItem('lang') || 'en';
+function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+
+function applyI18n() {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (k === 'welcomeTitle') el.innerHTML = t(k);
+    else el.textContent = t(k);
+  });
+  document.getElementById('userInput').placeholder = t('inputPlaceholder');
+  document.getElementById('authEmail').placeholder = t('emailPh');
+  document.getElementById('authPassword').placeholder = t('passwordPh');
+  document.getElementById('langSelect').value = lang;
+  refreshAuthModalText();
+}
+function setLang(l) { lang = l; localStorage.setItem('lang', l); applyI18n(); }
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let sessionId = localStorage.getItem('sid') || uid();
+let token = localStorage.getItem('token');
+let turns = 0;
+let selAmt = null;
+let authMode = 'register';
+let busy = false;
+let pendingMessage = localStorage.getItem('pendingMessage') || null;
+localStorage.setItem('sid', sessionId);
+
+const params = new URLSearchParams(location.search);
+const paidReturn = params.get('paid');
+if (params.get('session')) { sessionId = params.get('session'); localStorage.setItem('sid', sessionId); }
+
+function uid() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>
+    (c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
+}
+
+function refreshAuthUI() {
+  document.getElementById('authBtn').style.display = token ? 'none' : '';
+  document.getElementById('profileBtn').style.display = token ? '' : 'none';
+  document.getElementById('newChatBtn').style.display = token ? '' : 'none';
+}
+
+// Start a fresh conversation (new session id, blank chat)
+function newChat() {
+  sessionId = uid(); localStorage.setItem('sid', sessionId);
+  turns = 0; pendingMessage = null; localStorage.removeItem('pendingMessage');
+  document.getElementById('welcome').style.display = 'none';
+  const cu = document.getElementById('chatUI'); cu.style.display = 'flex'; cu.style.flexDirection = 'column';
+  document.getElementById('chat').innerHTML = '';
+  addMsg('god', t('newChatGreet'));
+  document.getElementById('userInput').focus();
+}
+function logout() { localStorage.removeItem('token'); token = null; refreshAuthUI(); }
+
+function openAuth() { switchTab('register'); showModal('authModal'); }
+
+// ── Profile ──────────────────────────────────────────────────────────────────
+function fmtDate(unixSec) {
+  if (!unixSec) return '';
+  try { return new Date(unixSec * 1000).toLocaleDateString(lang === 'zh' ? 'zh-CN' : lang); } catch { return ''; }
+}
+async function openProfile() {
+  if (!token) return openAuth();
+  document.getElementById('profileSun').innerHTML = dawnIcon(34);
+  document.getElementById('pLang').value = lang;
+  showModal('profileModal');
+  // Load account info
+  try {
+    const me = await (await fetch('/api/me', { headers: { Authorization: 'Bearer ' + token } })).json();
+    document.getElementById('pEmail').textContent = me.email || '';
+    document.getElementById('pStatus').textContent = t('memberSince') + (me.createdAt ? ' · ' + fmtDate(me.createdAt) : '');
+    const subLabel = document.getElementById('pSubLabel');
+    const manageBtn = document.getElementById('pManageBtn');
+    if (me.subscribed) {
+      subLabel.textContent = t('subActive') + (me.subscriptionUntil ? ' · ' + fmtDate(me.subscriptionUntil) : '');
+      manageBtn.style.display = '';
+    } else {
+      subLabel.textContent = t('subNone');
+      manageBtn.style.display = 'none';
+    }
+  } catch {}
+  // Load conversation history
+  try {
+    const d = await (await fetch('/api/sessions', { headers: { Authorization: 'Bearer ' + token } })).json();
+    renderSessions(d.sessions || []);
+  } catch {}
+}
+
+function renderSessions(sessions) {
+  const box = document.getElementById('pSessions');
+  if (!sessions.length) { box.innerHTML = `<div class="sessions-empty">${esc(t('noHistory'))}</div>`; return; }
+  box.innerHTML = '';
+  sessions.forEach(s => {
+    const label = s.title || s.preview || t('untitled');
+    const item = document.createElement('div');
+    item.className = 'session-item-wrap';
+    item.innerHTML = `
+      <button class="session-item" data-open>
+        <div class="session-prev">${esc(label)}</div>
+        <div class="session-meta">${fmtDate(s.lastAt)} · ${s.turns} ${esc(t('turnsUnit'))}</div>
+      </button>
+      <div class="session-actions">
+        <button class="icon-act" data-rename title="rename">✎</button>
+        <button class="icon-act" data-del title="delete">🗑</button>
+      </div>`;
+    item.querySelector('[data-open]').onclick = () => openSession(s.sessionId);
+    item.querySelector('[data-rename]').onclick = (e) => { e.stopPropagation(); renameSession(s); };
+    item.querySelector('[data-del]').onclick = (e) => { e.stopPropagation(); deleteSession(s.sessionId); };
+    box.appendChild(item);
+  });
+}
+
+async function renameSession(s) {
+  const name = prompt(t('renamePrompt'), s.title || s.preview || '');
+  if (name === null) return;
+  try {
+    await fetch('/api/sessions/' + encodeURIComponent(s.sessionId) + '/title', {
+      method: 'POST', headers: { 'Content-Type':'application/json', Authorization:'Bearer '+token },
+      body: JSON.stringify({ title: name.trim() })
+    });
+    openProfile();
+  } catch {}
+}
+
+async function deleteSession(sid) {
+  if (!confirm(t('deleteOneConfirm'))) return;
+  try {
+    await fetch('/api/sessions/' + encodeURIComponent(sid), { method:'DELETE', headers:{ Authorization:'Bearer '+token } });
+  } catch {}
+  if (sid === sessionId) newChat();
+  openProfile();
+}
+
+async function openSession(sid) {
+  sessionId = sid; localStorage.setItem('sid', sid);
+  closeModal('profileModal');
+  document.getElementById('welcome').style.display = 'none';
+  const cu = document.getElementById('chatUI'); cu.style.display = 'flex'; cu.style.flexDirection = 'column';
+  document.getElementById('chat').innerHTML = '';
+  try {
+    const d = await (await fetch('/api/history?sessionId=' + sid, { headers: { Authorization: 'Bearer ' + token } })).json();
+    (d.messages || []).forEach(m => addMsg(m.role === 'assistant' ? 'god' : 'user', m.content));
+    turns = Math.floor((d.messages || []).length / 2);
+  } catch {}
+}
+
+async function saveLocale(l) {
+  if (!token) return;
+  try { await fetch('/api/me/locale', { method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+token}, body: JSON.stringify({ locale: l }) }); } catch {}
+}
+
+async function openBilling() {
+  try {
+    const d = await (await fetch('/api/billing-portal', { method:'POST', headers:{Authorization:'Bearer '+token} })).json();
+    if (d.url) location.href = d.url;
+  } catch {}
+}
+
+async function deleteAccount() {
+  if (!confirm(t('deleteConfirm'))) return;
+  try {
+    await fetch('/api/account', { method:'DELETE', headers:{Authorization:'Bearer '+token} });
+  } catch {}
+  localStorage.removeItem('token'); localStorage.removeItem('sid'); localStorage.removeItem('pendingMessage');
+  token = null;
+  location.href = '/';
+}
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+async function startChat() {
+  document.getElementById('welcome').style.display = 'none';
+  const cu = document.getElementById('chatUI');
+  cu.style.display = 'flex'; cu.style.flexDirection = 'column';
+  document.getElementById('userInput').focus();
+
+  // Restore history for logged-in users
+  if (token) {
+    try {
+      const r = await fetch('/api/history?sessionId=' + sessionId, { headers: { Authorization: 'Bearer ' + token } });
+      const d = await r.json();
+      if (d.messages && d.messages.length) {
+        d.messages.forEach(m => addMsg(m.role === 'assistant' ? 'god' : 'user', m.content));
+        turns = Math.floor(d.messages.length / 2);
+      }
+    } catch {}
+  }
+
+  // Handle return from Stripe
+  if (paidReturn === 'donate') addMsg('god', t('greetDonate'));
+  if (paidReturn === 'subscribe') addMsg('god', t('greetSubscribe'));
+  if (paidReturn && pendingMessage) {
+    const m = pendingMessage; pendingMessage = null; localStorage.removeItem('pendingMessage');
+    setTimeout(() => sendText(m), 600);
+  }
+  history.replaceState({}, '', '/');
+}
+
+// ── Input ─────────────────────────────────────────────────────────────────────
+const inp = document.getElementById('userInput');
+inp.addEventListener('input', function(){ this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,130)+'px'; });
+inp.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+
+function send() {
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = ''; inp.style.height = 'auto';
+  sendText(text);
+}
+
+async function sendText(text) {
+  busy = true;
+  document.getElementById('sendBtn').disabled = true;
+  addMsg('user', text);
+  const typing = addTyping();
+
+  try {
+    const r = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', ...(token?{Authorization:'Bearer '+token}:{}) },
+      body: JSON.stringify({ message: text, sessionId })
+    });
+    const d = await r.json();
+    typing.remove();
+
+    if (d.error) {
+      addMsg('god', t('errRetry'));
+    } else {
+      addMsg('god', d.reply);
+      if (d.crisis) addCrisis();
+      turns = d.turnCount || turns + 1;
+      maybePrompt(d.loggedIn);
+    }
+  } catch {
+    typing.remove();
+    addMsg('god', t('errRetry'));
+  }
+  busy = false;
+  document.getElementById('sendBtn').disabled = false;
+  inp.focus();
+}
+
+// FREE MODE: soft prompts based on turn count. Never blocks the conversation.
+let shownRegister = false, lastFeedbackTurn = -1;
+function maybePrompt(loggedIn) {
+  if (!shownRegister && !token && turns >= 5) {
+    shownRegister = true;
+    setTimeout(() => { switchTab('register'); showModal('authModal'); }, 900);
+    return;
+  }
+  // Feedback + donation: first at turn 6, then every 7 turns (6, 13, 20, ...).
+  if (turns >= 6 && (turns - 6) % 7 === 0 && turns !== lastFeedbackTurn) {
+    lastFeedbackTurn = turns;
+    setTimeout(() => showModal('feedbackModal'), 900);
+  }
+}
+
+// Persistent support entry (top-right) — opens the same feedback/donation modal anytime.
+function openSupport() { resetFeedback(); showModal('feedbackModal'); }
+function resetFeedback() {
+  fbRating = 0; fbLiked = null; selAmt = null;
+  paintStars();
+  document.getElementById('likeYes').classList.remove('on');
+  document.getElementById('likeNo').classList.remove('on');
+  document.querySelectorAll('.amt').forEach(b => b.classList.remove('on'));
+  const b = document.getElementById('donatePay'); b.disabled = true; b.textContent = t('donateChoose');
+  document.getElementById('fbMsg').style.display = 'none';
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+function addMsg(role, text) {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = 'row ' + role;
+  const av = document.createElement('div');
+  av.className = 'avatar ' + role;
+  if (role === 'god') av.innerHTML = dawnIcon(26);
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = esc(text);
+  row.appendChild(av); row.appendChild(bub);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+  return row;
+}
+function addTyping() {
+  const chat = document.getElementById('chat');
+  const row = document.createElement('div');
+  row.className = 'row god';
+  row.innerHTML = `<div class="avatar god">${dawnIcon(26)}</div><div class="typing"><span></span><span></span><span></span></div>`;
+  chat.appendChild(row); chat.scrollTop = chat.scrollHeight;
+  return row;
+}
+function addCrisis() {
+  const chat = document.getElementById('chat');
+  const card = document.createElement('div');
+  card.className = 'crisis-card';
+  card.innerHTML = `<div class="ttl">${esc(t('crisisTitle'))}</div>${esc(t('crisisBody'))}
+    <a href="https://findahelpline.com" target="_blank" rel="noopener">findahelpline.com</a> ·
+    <a href="/privacy.html#crisis" target="_blank">988 · 116 123 · 400-161-9995</a>`;
+  chat.appendChild(card); chat.scrollTop = chat.scrollHeight;
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
+function refreshAuthModalText() {
+  document.getElementById('authSubmit').textContent = authMode==='register' ? t('authRegBtn') : t('authLogBtn');
+  document.getElementById('authTitle').textContent  = authMode==='register' ? t('authRegTitle') : t('authLogTitle');
+  document.getElementById('authDesc').textContent   = authMode==='register' ? t('authRegDesc') : t('authLogDesc');
+}
+function switchTab(m) {
+  authMode = m;
+  document.getElementById('t-reg').className = 'tab' + (m==='register'?' active':'');
+  document.getElementById('t-log').className = 'tab' + (m==='login'?' active':'');
+  document.getElementById('authErr').style.display = 'none';
+  refreshAuthModalText();
+}
+async function submitAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPassword').value;
+  const err = document.getElementById('authErr');
+  err.style.display = 'none';
+  if (!email || !pass) return showErr(err, t('errFields'));
+  if (authMode==='register' && pass.length<6) return showErr(err, t('errPass'));
+  try {
+    const r = await fetch('/api/auth/'+(authMode==='register'?'register':'login'), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password:pass, sessionId, locale: lang })
+    });
+    const d = await r.json();
+    if (!r.ok) return showErr(err, d.error || t('errGeneric'));
+    token = d.token; localStorage.setItem('token', token);
+    refreshAuthUI(); closeModal('authModal');
+    addMsg('god', authMode==='register' ? t('greetRegister') : t('greetLogin'));
+    // Resend the message that triggered the gate
+    if (pendingMessage) { const m = pendingMessage; pendingMessage=null; localStorage.removeItem('pendingMessage'); setTimeout(()=>sendText(m), 500); }
+  } catch { showErr(err, t('errNetwork')); }
+}
+function showErr(el,msg){ el.textContent=msg; el.style.display='block'; }
+
+// ── Donate / Subscribe ───────────────────────────────────────────────────────
+function pickAmt(a, el) {
+  selAmt = a;
+  document.querySelectorAll('.amt').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const b = document.getElementById('donatePay');
+  b.disabled = false; b.textContent = t('donatePay') + ' $' + a;
+}
+async function donate() {
+  if (!selAmt) return;
+  await submitFeedback(); // capture any rating/like they gave before paying
+  const msg = document.getElementById('fbMsg');
+  msg.style.display = 'none';
+  try {
+    const r = await fetch('/api/donate', {
+      method:'POST', headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
+      body: JSON.stringify({ amount: selAmt, sessionId })
+    });
+    const d = await r.json();
+    if (d.url) { location.href = d.url; return; }
+    msg.style.display = 'block'; // payment not available (e.g. Stripe not active yet)
+  } catch { msg.style.display = 'block'; }
+}
+
+// ── Feedback (rating + like), fully optional ─────────────────────────────────
+let fbRating = 0, fbLiked = null;
+function initStars() {
+  document.querySelectorAll('#stars span').forEach(s => {
+    s.onclick = () => { fbRating = +s.getAttribute('data-v'); paintStars(); };
+  });
+}
+function paintStars() {
+  document.querySelectorAll('#stars span').forEach(s => {
+    s.classList.toggle('on', +s.getAttribute('data-v') <= fbRating);
+  });
+}
+function setLiked(v) {
+  fbLiked = v;
+  document.getElementById('likeYes').classList.toggle('on', v === true);
+  document.getElementById('likeNo').classList.toggle('on', v === false);
+}
+async function submitFeedback() {
+  if (fbRating === 0 && fbLiked === null) return; // nothing to send
+  try {
+    await fetch('/api/feedback', {
+      method:'POST', headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
+      body: JSON.stringify({ rating: fbRating || null, liked: fbLiked, sessionId })
+    });
+  } catch {}
+}
+async function skipFeedback() {
+  await submitFeedback();
+  closeModal('feedbackModal');
+}
+function goHome() {
+  document.getElementById('chatUI').style.display = 'none';
+  ['authModal','feedbackModal','subModal','profileModal'].forEach(closeModal);
+  document.getElementById('welcome').style.display = 'flex';
+}
+async function subscribe() {
+  if (!token) { openAuth(); return; }
+  try {
+    const r = await fetch('/api/subscribe', {
+      method:'POST', headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body: JSON.stringify({ sessionId })
+    });
+    const d = await r.json();
+    if (d.url) location.href = d.url;
+  } catch {}
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────────────────
+function showModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+document.querySelectorAll('.overlay').forEach(el=>el.addEventListener('click', e=>{ if(e.target===el) closeModal(el.id); }));
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+applyI18n();
+refreshAuthUI();
+initStars();
+// log a visit once per page load
+fetch('/api/visit', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ sessionId, locale: lang }) }).catch(()=>{});
+if (paidReturn) startChat();
+</script>
+</body>
+</html>

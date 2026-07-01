@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Your Own God — Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #0E0A06; color: #F0E6D2; padding: 28px; }
+  h1 { font-family: Georgia, serif; font-weight: normal; color: #D99A4E; font-size: 24px; margin-bottom: 4px; }
+  .sub { color: #8A7355; font-size: 13px; margin-bottom: 24px; }
+  .login { max-width: 360px; margin: 80px auto; text-align: center; }
+  .login input { width: 100%; padding: 13px 16px; border-radius: 12px; border: 1px solid #3a2e1c; background: #1a1308; color: #F0E6D2; font-size: 15px; outline: none; margin-bottom: 12px; }
+  .login button, .refresh { background: #C97B30; color: #1a1308; border: none; padding: 12px 22px; border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .card { background: #18110A; border: 1px solid rgba(217,154,78,0.2); border-radius: 16px; padding: 18px; }
+  .card .n { font-family: Georgia, serif; font-size: 30px; color: #E8B85A; }
+  .card .l { font-size: 12.5px; color: #9A8260; margin-top: 4px; }
+  .section { background: #18110A; border: 1px solid rgba(217,154,78,0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  .section h2 { font-family: Georgia, serif; font-weight: normal; font-size: 17px; color: #D99A4E; margin-bottom: 14px; }
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; font-size: 13px; }
+  .bar-row .d { width: 90px; color: #9A8260; }
+  .bar { height: 16px; background: linear-gradient(90deg,#C97B30,#E8B85A); border-radius: 4px; min-width: 2px; }
+  .fb { border-top: 1px solid #2a2114; padding: 10px 0; font-size: 13.5px; }
+  .fb .meta { color: #9A8260; font-size: 12px; }
+  .err { color: #E87070; margin-top: 10px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <h1>✦ Dashboard</h1>
+  <div class="sub" style="margin-bottom:20px">Enter admin key</div>
+  <input type="password" id="key" placeholder="admin key" onkeydown="if(event.key==='Enter')load()">
+  <button onclick="load()">View</button>
+  <div class="err" id="err" style="display:none">Wrong key</div>
+</div>
+
+<div id="dash" style="display:none">
+  <div class="top">
+    <div><h1>✦ Be Your Own God — Dashboard</h1><div class="sub" id="ts"></div></div>
+    <button class="refresh" onclick="load()">Refresh</button>
+  </div>
+  <div class="grid" id="cards"></div>
+  <div class="section"><h2>Visits — last 14 days</h2><div id="daily"></div></div>
+  <div class="section"><h2>Visits by language</h2><div id="locale"></div></div>
+  <div class="section"><h2>Recent feedback</h2><div id="feedback"></div></div>
+</div>
+
+<script>
+let KEY = '';
+async function load() {
+  KEY = document.getElementById('key') ? (document.getElementById('key').value || KEY) : KEY;
+  try {
+    const r = await fetch('/api/admin/stats?key=' + encodeURIComponent(KEY));
+    if (!r.ok) { document.getElementById('err').style.display = 'block'; return; }
+    const s = await r.json();
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    render(s);
+  } catch { document.getElementById('err').style.display = 'block'; }
+}
+function card(n, l) { return `<div class="card"><div class="n">${n}</div><div class="l">${l}</div></div>`; }
+function render(s) {
+  document.getElementById('ts').textContent = new Date().toLocaleString();
+  document.getElementById('cards').innerHTML = [
+    card(s.visits_total, '总访问'),
+    card(s.visits_today, '今日访问'),
+    card(s.visits_week, '近7天访问'),
+    card(s.users_total, '注册用户'),
+    card(s.users_today, '今日新增用户'),
+    card(s.conversations, '对话总数'),
+    card(s.messages_total, '用户消息数'),
+    card(s.messages_today, '今日消息'),
+    card('$' + s.donations_sum, '打赏总额'),
+    card(s.donations_count, '打赏笔数'),
+    card(s.subscriptions_active, '订阅中'),
+    card(s.avg_rating || '—', '平均评分'),
+    card(s.liked_pct + '%', '喜欢占比'),
+    card(s.feedback_count, '评分人数'),
+  ].join('');
+
+  const max = Math.max(1, ...s.daily.map(d => d.n));
+  document.getElementById('daily').innerHTML = s.daily.length
+    ? s.daily.map(d => `<div class="bar-row"><span class="d">${d.d}</span><div class="bar" style="width:${d.n/max*100}%"></div><span>${d.n}</span></div>`).join('')
+    : '<div class="sub">暂无数据</div>';
+
+  document.getElementById('locale').innerHTML = s.by_locale.length
+    ? s.by_locale.map(l => `<div class="bar-row"><span class="d">${l.locale||'?'}</span><span>${l.n}</span></div>`).join('')
+    : '<div class="sub">暂无数据</div>';
+
+  document.getElementById('feedback').innerHTML = s.recent_feedback.length
+    ? s.recent_feedback.map(f => `<div class="fb">${f.rating?('★'.repeat(f.rating)):''} ${f.liked===1?'👍':f.liked===0?'·':''} ${f.comment?('— '+escapeHtml(f.comment)):''}<div class="meta">${new Date(f.created_at*1000).toLocaleString()}</div></div>`).join('')
+    : '<div class="sub">暂无反馈</div>';
+}
+function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

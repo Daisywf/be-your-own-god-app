@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Your Own God — Icon 方案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang SC', sans-serif;
+    background: linear-gradient(160deg, #FFF6EC 0%, #FCE6D2 100%);
+    color: #3A2A1A;
+    min-height: 100vh;
+    padding: 48px 24px;
+  }
+  h1 {
+    text-align: center;
+    font-family: Georgia, serif;
+    font-weight: normal;
+    font-size: 28px;
+    color: #C97B30;
+    margin-bottom: 8px;
+  }
+  .sub {
+    text-align: center;
+    color: #8A6F55;
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #FFFDFA;
+    border: 1px solid rgba(217,154,78,0.25);
+    border-radius: 24px;
+    padding: 36px 28px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(180,120,50,0.10);
+  }
+  .icon-stage {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .icon-name {
+    font-family: Georgia, serif;
+    font-size: 19px;
+    color: #C97B30;
+    margin-bottom: 6px;
+  }
+  .icon-zh { font-size: 15px; color: #3A2A1A; margin-bottom: 12px; font-weight: 600; }
+  .icon-desc {
+    font-size: 13.5px;
+    color: #8A6F55;
+    line-height: 1.7;
+  }
+  .small-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(217,154,78,0.3);
+  }
+  .small-row .label { font-size: 11px; color: #B89876; }
+  .num {
+    display:inline-block;
+    width: 26px; height: 26px; line-height: 26px;
+    background: #C97B30; color: white; border-radius: 50%;
+    font-family: Georgia, serif; font-size: 14px; margin-bottom: 14px;
+  }
+</style>
+</head>
+<body>
+  <h1>✦ Be Your Own God</h1>
+  <div class="sub">三个 icon 方案 · 表达「内在的神」· 晨曦色调</div>
+
+  <div class="grid">
+
+    <!-- Concept 1: Inner Light -->
+    <div class="card">
+      <div class="num">1</div>
+      <div class="icon-stage">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <radialGradient id="g1" cx="50%" cy="45%" r="55%">
+              <stop offset="0%" stop-color="#FBE3B0"/>
+              <stop offset="55%" stop-color="#E5A64E"/>
+              <stop offset="100%" stop-color="#C97B30"/>
+            </radialGradient>
+          </defs>
+          <!-- outer circle = the self -->
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#D99A4E" stroke-width="2.5" opacity="0.5"/>
+          <!-- rays -->
+          <g stroke="#D99A4E" stroke-width="3" stroke-linecap="round">
+            <line x1="60" y1="14" x2="60" y2="26"/>
+            <line x1="60" y1="94" x2="60" y2="106"/>
+            <line x1="14" y1="60" x2="26" y2="60"/>
+            <line x1="94" y1="60" x2="106" y2="60"/>
+            <line x1="27" y1="27" x2="35" y2="35"/>
+            <line x1="85" y1="85" x2="93" y2="93"/>
+            <line x1="93" y1="27" x2="85" y2="35"/>
+            <line x1="35" y1="85" x2="27" y2="93"/>
+          </g>
+          <!-- inner sun = the god within -->
+          <circle cx="60" cy="60" r="26" fill="url(#g1)"/>
+        </svg>
+      </div>
+      <div class="icon-name">Inner Light</div>
+      <div class="icon-zh">内心之光</div>
+      <div class="icon-desc">外圈是「自我」，中心是发光的神。光从内心的中央升起、向四周照耀——你自己就是光源。</div>
+    </div>
+
+    <!-- Concept 2: Dawn in Cupped Hands -->
+    <div class="card">
+      <div class="num">2</div>
+      <div class="icon-stage">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FBD89A"/>
+              <stop offset="100%" stop-color="#E59A3E"/>
+            </linearGradient>
+          </defs>
+          <!-- sun -->
+          <circle cx="60" cy="52" r="22" fill="url(#g2)"/>
+          <!-- rays above -->
+          <g stroke="#E5A64E" stroke-width="2.6" stroke-linecap="round" opacity="0.85">
+            <line x1="60" y1="14" x2="60" y2="22" stroke="#E5A64E"/>
+            <line x1="34" y1="24" x2="39" y2="31" stroke="#E5A64E"/>
+            <line x1="86" y1="24" x2="81" y2="31" stroke="#E5A64E"/>
+            <line x1="20" y1="48" x2="28" y2="50" stroke="#E5A64E"/>
+            <line x1="100" y1="48" x2="92" y2="50" stroke="#E5A64E"/>
+          </g>
+          <!-- cupped hands / horizon arc -->
+          <path d="M 22 74 Q 60 108 98 74" fill="none" stroke="#C97B30" stroke-width="5" stroke-linecap="round"/>
+          <path d="M 34 80 Q 60 100 86 80" fill="none" stroke="#D99A4E" stroke-width="3.5" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <div class="icon-name">Dawn Within</div>
+      <div class="icon-zh">捧起的黎明</div>
+      <div class="icon-desc">一轮朝阳从捧起的双手（或地平线）中升起。黎明、希望、被温柔托住——光在你手中升起。</div>
+    </div>
+
+    <!-- Concept 3: The Divine Self (halo figure) -->
+    <div class="card">
+      <div class="num">3</div>
+      <div class="icon-stage">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <defs>
+            <radialGradient id="g3" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FBE3B0"/>
+              <stop offset="100%" stop-color="#D99A4E"/>
+            </radialGradient>
+          </defs>
+          <!-- halo -->
+          <circle cx="60" cy="40" r="30" fill="none" stroke="#E5A64E" stroke-width="3.5" opacity="0.75"/>
+          <circle cx="60" cy="40" r="30" fill="none" stroke="#FBE3B0" stroke-width="1.2"/>
+          <!-- head -->
+          <circle cx="60" cy="40" r="15" fill="url(#g3)"/>
+          <!-- shoulders / body -->
+          <path d="M 30 104 Q 32 74 60 74 Q 88 74 90 104 Z" fill="url(#g3)"/>
+        </svg>
+      </div>
+      <div class="icon-name">The Divine Self</div>
+      <div class="icon-zh">神性的自我</div>
+      <div class="icon-desc">一个带着光环的身影——那个有神性的、值得被敬重的自己。最直白地表达「你自己就是神」。</div>
+    </div>
+
+  </div>
+</body>
+</html>
